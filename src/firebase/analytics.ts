@@ -24,7 +24,7 @@ export async function recordGameStart(): Promise<void> {
       });
     } else {
       await setDoc(ref, {
-        game_name: "代理孕母的心路歷程",
+        game_name: "十月之約",
         play_count: 1,
         first_played: new Date().toISOString(),
         last_played: new Date().toISOString(),

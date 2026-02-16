@@ -175,7 +175,7 @@ function App() {
           color: "#e0e0e0", fontSize: 42, fontWeight: 300, letterSpacing: 8, marginBottom: 15,
           textShadow: "0 0 30px rgba(255,255,255,0.1)",
         }}>
-          代理孕母的心路歷程
+          十月之約
         </h1>
         <div style={{ color: "rgba(255,255,255,0.25)", fontSize: 16, marginBottom: 60 }}>
           你的每一個選擇，都將影響故事的走向
@@ -299,7 +299,7 @@ function App() {
           color: "rgba(255,255,255,0.5)", fontSize: 15, marginBottom: 8,
           display: "flex", justifyContent: "space-between",
         }}>
-          <span>代理孕母的心路歷程</span>
+          <span>十月之約</span>
           <span>{scene.scene_name}</span>
         </div>
         <div style={{ height: 3, background: "rgba(255,255,255,0.1)", borderRadius: 2, overflow: "hidden" }}>
