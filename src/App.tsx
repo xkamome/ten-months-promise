@@ -6,6 +6,7 @@ import DialogueBox from "./components/DialogueBox";
 import ChoicePanel from "./components/ChoicePanel";
 import VariableDebug from "./components/VariableDebug";
 import type { Choice } from "./data/types";
+import { recordGameStart, recordGameComplete, getGameStats } from "./firebase/analytics";
 
 const APP_VERSION = "v0.2.0";
 const APP_DATE = "2025-06-17";
@@ -36,11 +37,20 @@ function App() {
   const [fadeClass, setFadeClass] = useState<"" | "fade-out" | "fade-in">("");
   const [transText, setTransText] = useState("");
   const transitionTarget = useRef<string | null>(null);
+  const [playCount, setPlayCount] = useState<number | null>(null);
+  const hasRecordedEnd = useRef(false);
 
   useEffect(() => {
     const unsub = engine.subscribe(() => setTick((t) => t + 1));
     return unsub;
   }, [engine]);
+
+  // 載入遊玩次數
+  useEffect(() => {
+    getGameStats().then((stats) => {
+      if (stats) setPlayCount(stats.play_count);
+    });
+  }, []);
 
   const dialogue = engine.getCurrentDialogue();
   const scene = engine.getCurrentScene();
@@ -55,10 +65,25 @@ function App() {
 
   const character = dialogue ? engine.getCharacter(dialogue.character) : null;
 
+  // 到達結局時記錄
+  useEffect(() => {
+    if (isEnding && !hasRecordedEnd.current) {
+      hasRecordedEnd.current = true;
+      recordGameComplete(sceneId);
+    }
+  }, [isEnding, sceneId]);
+
   // 開始遊戲
   const handleStart = useCallback(() => {
     engine.start();
     setPhase("playing");
+    hasRecordedEnd.current = false;
+    recordGameStart().then(() => {
+      // 更新顯示的次數
+      getGameStats().then((stats) => {
+        if (stats) setPlayCount(stats.play_count);
+      });
+    });
   }, [engine]);
 
   // 推進對話
@@ -161,6 +186,15 @@ function App() {
         }}>
           點擊任意處開始
         </div>
+        {/* 遊玩次數 */}
+        {playCount !== null && (
+          <div style={{
+            position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)",
+            color: "rgba(255,255,255,0.2)", fontSize: 13,
+          }}>
+            已有 {playCount} 人體驗過這個故事
+          </div>
+        )}
         {/* 版本號 */}
         <div style={{
           position: "absolute", bottom: 15, right: 20,
