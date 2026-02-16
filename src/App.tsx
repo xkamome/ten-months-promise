@@ -8,8 +8,8 @@ import VariableDebug from "./components/VariableDebug";
 import type { Choice } from "./data/types";
 import { recordGameStart, recordGameComplete, getGameStats } from "./firebase/analytics";
 
-const APP_VERSION = "v0.2.0";
-const APP_DATE = "2025-06-17";
+const APP_VERSION = "v0.2.1";
+const APP_DATE = "2026-02-17";
 
 const timeLabel: Record<string, string> = {
   cp1: "第 3 個月",
@@ -42,7 +42,7 @@ function App() {
 
   useEffect(() => {
     const unsub = engine.subscribe(() => setTick((t) => t + 1));
-    return unsub;
+    return () => { unsub(); };
   }, [engine]);
 
   // 載入遊玩次數
